@@ -22,6 +22,6 @@ const trainSchema = new Schema({
     state: { type: Number, required: true, enum: Object.values(trainsState) }
 });
 
-const trainModel = model("Train", trainSchema, "trains");
+const TrainModel = model("Train", trainSchema, "trains");
 
-module.exports = trainModel;
+module.exports = { TrainModel };
