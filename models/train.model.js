@@ -19,7 +19,7 @@ const trainSchema = new Schema({
     speed: { type: Number },
     throttle: { type: Number },
     brake: { type: Number },
-    state: { type: Number, required: true, enum: Object.values(trainsState) }
+    state: { type: Number, required: true, enum: Object.values(trainsState), default: trainsState.WAREHOUSE },
 });
 
 const TrainModel = model("Train", trainSchema, "trains");

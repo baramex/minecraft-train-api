@@ -27,7 +27,7 @@ router.post("/user", async (req, res) => {
         const user = new UserModel({ cardId });
         await user.save();
 
-        res.status(200).json(user);
+        res.status(201).json(user);
     } catch (error) {
         console.error(error);
         res.status(error.status || 500).json({ error: error.message || "Internal server error" });
