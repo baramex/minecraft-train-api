@@ -8,8 +8,7 @@ const stationSchema = new Schema({
             y: { type: Number },
             z: { type: Number, required: true }
         }, required: true
-    },
-    lines: { type: [{ type: Schema.Types.ObjectId, ref: "Line" }], required: true, default: [] },
+    }
 });
 
 const StationModel = model("Station", stationSchema, "stations");
