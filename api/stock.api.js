@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { StockModel } = require("../models/stock.model");
+const CustomError = require("../services/util");
 
 const router = require("express").Router();
 

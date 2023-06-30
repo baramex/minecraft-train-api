@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
-app.use("/api",
+app.use("/",
     require("../api/stock.api"),
     require("../api/detector.api"),
     require("../api/line.api"),

@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { DetectorModel } = require("../models/detector.model");
+const CustomError = require("../services/util");
 
 const router = require("express").Router();
 
@@ -22,10 +23,10 @@ const detectorMiddleware = async (req, res, next) => {
 
 router.post("/detector", async (req, res) => {
     try {
-        const { name, position, station } = req.body;
-        if (!name || typeof name !== "string" || !position || typeof position !== "object" || (station && ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
+        const { direction, position, station } = req.body;
+        if (!direction || typeof direction !== "string" || !position || typeof position !== "object" || (station && ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
 
-        const detector = new DetectorModel({ name, position, station });
+        const detector = new DetectorModel({ direction, position, station });
         await detector.save();
 
         res.status(201).json(detector);
@@ -46,10 +47,10 @@ router.get("/detector/:detectorId", detectorMiddleware, (req, res) => {
 
 router.post("/detector/:detectorId", detectorMiddleware, async (req, res) => {
     try {
-        const { name, position, station } = req.body;
-        if ((name && typeof name !== "string") || (position && typeof position !== "object") || (station && ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
+        const { direction, position, station } = req.body;
+        if ((direction && typeof direction !== "string") || (position && typeof position !== "object") || (station && ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
 
-        if (name) req.detector.name = name;
+        if (direction) req.detector.direction = direction;
         if (position) req.detector.position = position;
         if (station) req.detector.station = station;
         await req.detector.save();

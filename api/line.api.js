@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { LineModel } = require("../models/line.model");
+const CustomError = require("../services/util");
 
 const router = require("express").Router();
 
