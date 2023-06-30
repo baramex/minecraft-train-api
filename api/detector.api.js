@@ -24,7 +24,7 @@ const detectorMiddleware = async (req, res, next) => {
 router.post("/detector", async (req, res) => {
     try {
         const { direction, position, station } = req.body;
-        if (!direction || typeof direction !== "string" || !position || typeof position !== "object" || (station && ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
+        if (!direction || typeof direction !== "string" || !position || typeof position !== "object" || (station && !ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
 
         const detector = new DetectorModel({ direction, position, station });
         await detector.save();
@@ -48,7 +48,7 @@ router.get("/detector/:detectorId", detectorMiddleware, (req, res) => {
 router.post("/detector/:detectorId", detectorMiddleware, async (req, res) => {
     try {
         const { direction, position, station } = req.body;
-        if ((direction && typeof direction !== "string") || (position && typeof position !== "object") || (station && ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
+        if ((direction && typeof direction !== "string") || (position && typeof position !== "object") || (station && !ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
 
         if (direction) req.detector.direction = direction;
         if (position) req.detector.position = position;

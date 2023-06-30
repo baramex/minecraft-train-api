@@ -7,10 +7,10 @@ const router = require("express").Router();
 
 const trainMiddleware = async (req, res, next) => {
     try {
-        const { tag } = req.params;
-        if (!tag || typeof tag !== "string") throw new CustomError("Bad request", 400);
+        const { trainId } = req.params;
+        if (!trainId || !ObjectId.isValid(trainId)) throw new CustomError("Bad request", 400);
 
-        req.train = await TrainModel.findOne({ tag });
+        req.train = await TrainModel.findById(trainId);
         if (!req.train) throw new CustomError("Not found", 404);
 
         next();
@@ -35,7 +35,7 @@ router.post("/train", async (req, res) => {
     }
 });
 
-router.get("/train/:tag", trainMiddleware, (req, res) => {
+router.get("/train/:trainId", trainMiddleware, (req, res) => {
     try {
         res.status(200).json(req.train);
     } catch (error) {
@@ -44,7 +44,7 @@ router.get("/train/:tag", trainMiddleware, (req, res) => {
     }
 });
 
-router.post("/train/:tag/detect", trainMiddleware, async (req, res) => {
+router.post("/train/:trainId/detect", trainMiddleware, async (req, res) => {
     try {
         const { detector: detectorId, speed, throttle, brake, direction } = req.body;
         if (!detectorId || !ObjectId.isValid(detectorId) || typeof speed !== "number" || typeof throttle !== "number" || typeof brake !== "number" || typeof direction !== "string") throw new CustomError("Bad request", 400);
@@ -70,17 +70,17 @@ router.post("/train/:tag/detect", trainMiddleware, async (req, res) => {
     }
 });
 
-router.post("/train/:tag", trainMiddleware, async (req, res) => {
+router.post("/train/:trainId", trainMiddleware, async (req, res) => {
     try {
         const { line, stocks, state } = req.body;
 
         if (line && !ObjectId.isValid(line)) throw new CustomError("Bad request", 400);
         if (stocks && !Array.isArray(stocks)) throw new CustomError("Bad request", 400);
-        if (state && typeof state !== "number") throw new CustomError("Bad request", 400);
+        if (state !== undefined && typeof state !== "number") throw new CustomError("Bad request", 400);
 
         if (line) req.train.line = line;
         if (stocks) req.train.stocks = stocks;
-        if (state) req.train.state = state;
+        if (state !== undefined) req.train.state = state;
         await req.train.save();
 
         res.status(200).json(req.train);
