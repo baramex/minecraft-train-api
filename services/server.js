@@ -1,3 +1,4 @@
+const bodyParser = require("body-parser");
 const CustomError = require("./util");
 
 const app = require("express")();
@@ -19,5 +20,15 @@ app.use((req, res, next) => {
         res.status(error.status || 500).json({ error: error.message || "Internal server error" });
     }
 });
+app.use(bodyParser.json());
+
+app.use("/api",
+    require("../api/stock.api"),
+    require("../api/detector.api"),
+    require("../api/line.api"),
+    require("../api/station.api"),
+    require("../api/train.api"),
+    require("../api/user.api")
+);
 
 module.exports = app;

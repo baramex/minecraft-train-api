@@ -53,10 +53,10 @@ router.get("/stock/:tag/shipment", stockMiddleware, (req, res) => {
 
 router.put("/stock/:tag/shipment", stockMiddleware, async (req, res) => {
     try {
-        const { shipment } = req.body;
-        if (!shipment || typeof shipment !== "object") throw new CustomError("Bad request", 400);
+        const { type, name, quantity, maxQuantity, destination } = req.body;
+        if (!type || typeof type !== "number" || !name || typeof name !== "string" || !quantity || typeof quantity !== "number" || (maxQuantity && typeof maxQuantity !== "number") || !destination || !ObjectId.isValid(destination)) throw new CustomError("Bad request", 400);
 
-        req.stock.shipment.push(shipment);
+        req.stock.shipment.push({ type, name, quantity, maxQuantity, destination });
         await req.stock.save();
 
         res.status(200).json(req.stock);
@@ -74,12 +74,13 @@ router.put("/stock/:tag/shipment/:id", stockMiddleware, async (req, res) => {
         const shipment = req.stock.shipment.find(s => id.isEquals(s._id));
         if (!shipment) throw new CustomError("Not found", 404);
 
-        const { type, name, quantity, destination } = req.body;
-        if ((type && typeof type !== "number") || (quantity && typeof quantity !== "number") || (name && typeof name !== "string") || (destination && !ObjectId.isValid(destination))) throw new CustomError("Bad request", 400);
+        const { type, name, quantity, maxQuantity, destination } = req.body;
+        if ((type && typeof type !== "number") || (quantity && typeof quantity !== "number") || (maxQuantity && typeof maxQuantity !== "number") || (name && typeof name !== "string") || (destination && !ObjectId.isValid(destination))) throw new CustomError("Bad request", 400);
 
         if (type) shipment.type = type;
         if (name) shipment.name = name;
         if (quantity) shipment.quantity = quantity;
+        if (maxQuantity) shipment.maxQuantity = maxQuantity;
         if (destination) shipment.destination = destination;
         await req.stock.save();
 

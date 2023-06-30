@@ -10,7 +10,8 @@ const stocksType = {
 const shipmentsType = {
     PASSENGER: 0,
     ITEM: 1,
-    FLUID: 2
+    FLUID: 2,
+    FUEL: 3
 };
 
 const stockSchema = new Schema({
@@ -21,6 +22,7 @@ const stockSchema = new Schema({
             type: { type: Number, required: true, enum: Object.values(shipmentsType) },
             name: { type: String },
             quantity: { type: Number, required: true },
+            maxQuantity: { type: Number },
             destination: { type: Types.ObjectId, ref: "Station" }
         }], required: true, default: []
     },

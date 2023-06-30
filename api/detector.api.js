@@ -43,3 +43,22 @@ router.get("/detector/:detectorId", detectorMiddleware, (req, res) => {
         res.status(error.status || 500).json({ error: error.message || "Internal server error" });
     }
 });
+
+router.post("/detector/:detectorId", detectorMiddleware, async (req, res) => {
+    try {
+        const { name, position, station } = req.body;
+        if ((name && typeof name !== "string") || (position && typeof position !== "object") || (station && ObjectId.isValid(station))) throw new CustomError("Bad request", 400);
+
+        if (name) req.detector.name = name;
+        if (position) req.detector.position = position;
+        if (station) req.detector.station = station;
+        await req.detector.save();
+
+        res.status(200).json(req.detector);
+    } catch (error) {
+        console.error(error);
+        res.status(error.status || 500).json({ error: error.message || "Internal server error" });
+    }
+});
+
+module.exports = router;
