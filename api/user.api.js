@@ -51,7 +51,7 @@ router.post("/user/:cardId/use", userMiddleware, async (req, res) => {
         const usage = req.user.remainingUsages.splice(0, 1)?.[0];
         if (!usage) throw new CustomError("No remaining usages", 400);
 
-        req.user.usages.push({ ...usage, station });
+        req.user.usages.push({ ...usage._doc, station });
         await req.user.save();
 
         res.status(200).json(req.user);
