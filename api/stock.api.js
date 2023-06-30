@@ -128,7 +128,7 @@ router.get("/stock/:tag/shipment/:id", stockMiddleware, async (req, res) => {
 
 router.get("/stock/:tag/train", stockMiddleware, async (req, res) => {
     try {
-        const train = TrainModel.findOne({ stocks: { $all: [req.stock._id] } });
+        const train = await TrainModel.findOne({ stocks: { $all: [req.stock._id] } });
         if (!train) throw new CustomError("Not found", 404);
 
         res.status(200).json(train);
