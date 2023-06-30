@@ -11,9 +11,11 @@ const trainsState = {
 };
 
 const trainSchema = new Schema({
+    tag: { type: String, required: true, unique: true },
     line: { type: Types.ObjectId, ref: "Line" },
     stocks: { type: [{ type: Types.ObjectId, ref: "Stock" }], required: true },
     station: { type: Types.ObjectId, ref: "Station" },
+    invertedDirection: { type: Boolean },
     lastDetector: { type: Types.ObjectId, ref: "Detector" },
     lastDetectorDate: { type: Date },
     speed: { type: Number },

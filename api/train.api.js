@@ -7,10 +7,10 @@ const router = require("express").Router();
 
 const trainMiddleware = async (req, res, next) => {
     try {
-        const { trainId } = req.params;
-        if (!trainId || !ObjectId.isValid(trainId)) throw new CustomError("Bad request", 400);
+        const { tag } = req.params;
+        if (!tag || typeof tag !== "string") throw new CustomError("Bad request", 400);
 
-        req.train = await TrainModel.findById(trainId);
+        req.train = await TrainModel.findOne({ tag });
         if (!req.train) throw new CustomError("Not found", 404);
 
         next();
@@ -35,7 +35,7 @@ router.post("/train", async (req, res) => {
     }
 });
 
-router.get("/train/:trainId", trainMiddleware, (req, res) => {
+router.get("/train/:tag", trainMiddleware, (req, res) => {
     try {
         res.status(200).json(req.train);
     } catch (error) {
@@ -44,10 +44,10 @@ router.get("/train/:trainId", trainMiddleware, (req, res) => {
     }
 });
 
-router.post("/train/:trainId/detect", trainMiddleware, async (req, res) => {
+router.post("/train/:tag/detect", trainMiddleware, async (req, res) => {
     try {
-        const { detector: detectorId, speed, throttle, brake } = req.body;
-        if (!detectorId || !ObjectId.isValid(detectorId)) throw new CustomError("Bad request", 400);
+        const { detector: detectorId, speed, throttle, brake, direction } = req.body;
+        if (!detectorId || !ObjectId.isValid(detectorId) || typeof speed !== "number" || typeof throttle !== "number" || typeof brake !== "number" || typeof direction !== "string") throw new CustomError("Bad request", 400);
 
         const detector = await DetectorModel.findById(detectorId);
         if (!detector) throw new CustomError("Not found", 404);
@@ -60,6 +60,7 @@ router.post("/train/:trainId/detect", trainMiddleware, async (req, res) => {
         req.train.speed = speed;
         req.train.throttle = throttle;
         req.train.brake = brake;
+        req.train.invertedDirection = direction !== detector.direction;
         await req.train.save();
 
         res.status(200).json(req.train);
@@ -69,7 +70,7 @@ router.post("/train/:trainId/detect", trainMiddleware, async (req, res) => {
     }
 });
 
-router.post("/train/:trainId", trainMiddleware, async (req, res) => {
+router.post("/train/:tag", trainMiddleware, async (req, res) => {
     try {
         const { line, stocks, state } = req.body;
 

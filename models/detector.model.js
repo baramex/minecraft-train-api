@@ -1,5 +1,12 @@
 const { Schema, model } = require("mongoose");
 
+const directions = {
+    EAST: "east",
+    WEST: "west",
+    NORTH: "north",
+    SOUTH: "south"
+};
+
 const Detector = new Schema({
     position: {
         type: {
@@ -8,7 +15,8 @@ const Detector = new Schema({
             z: { type: Number, required: true }
         }, required: true
     },
-    station: { type: Schema.Types.ObjectId, ref: "Station" }
+    station: { type: Schema.Types.ObjectId, ref: "Station" },
+    direction: { type: String, required: true, enum: Object.values(directions) },
 });
 
 const DetectorModel = model("Detector", Detector, "detectors");
