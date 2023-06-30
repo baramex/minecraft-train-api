@@ -9,7 +9,7 @@ const lineMiddleware = async (req, res, next) => {
         const { lineId } = req.params;
         if (!lineId || !ObjectId.isValid(lineId)) throw new CustomError("Bad request", 400);
 
-        req.line = LineModel.findById(lineId);
+        req.line = await LineModel.findById(lineId);
         if (!req.line) throw new CustomError("Not found", 404);
 
         next();

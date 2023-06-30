@@ -9,7 +9,7 @@ const stationMiddleware = async (req, res, next) => {
         const { stationId } = req.params;
         if (!stationId || !ObjectId.isValid(stationId)) throw new CustomError("Bad request", 400);
 
-        req.station = StationModel.findById(stationId);
+        req.station = await StationModel.findById(stationId);
         if (!req.station) throw new CustomError("Not found", 404);
 
         next();

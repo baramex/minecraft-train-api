@@ -10,7 +10,7 @@ const stockMiddleware = async (req, res, next) => {
         const { tag } = req.params;
         if (!tag || typeof tag !== "string") throw new CustomError("Bad request", 400);
 
-        req.stock = StockModel.findOne({ tag });
+        req.stock = await StockModel.findOne({ tag });
         if (!req.stock) throw new CustomError("Not found", 404);
 
         next();
